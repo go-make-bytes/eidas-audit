@@ -194,6 +194,7 @@ Standard platform env (`SERVICE_NAME`, `SERVER_URLS`, `LOG_*`, `OTEL_*`) comes f
 | `SERVICE_NAME` | — (required) | Logical service id; also the NATS connection name for broker-side monitoring |
 | `BROKER_URL` | — | NATS endpoint, e.g. `nats://nats:4222`. **Unset ⇒ the consumer is not started** (health-only boot, development) |
 | `BROKER_TLS_CERT` / `BROKER_TLS_KEY` / `BROKER_TLS_CA` | — | Broker client TLS material. Secret: each supports the `*_FILE` convention |
+| `EIDAS_AUDIT_STORE_DSN_FILE` | — | Path of a file holding the `EIDAS_AUDIT_STORE_DSN` value (written by a secrets agent); read when `EIDAS_AUDIT_STORE_DSN` is not set, surrounding whitespace trimmed. |
 | `EIDAS_AUDIT_STORE_DSN` | — | PostgreSQL DSN; connects as the `EXECUTE`-only `eidas_audit_public` role. **Unset ⇒ in-memory store** (development only — events do not survive a restart). Secret: supports `EIDAS_AUDIT_STORE_DSN_FILE`. Pool size comes from the DSN itself — `pool_max_conns` (pgx reads it and strips it before Postgres sees it; its default is the host's CPU count): set it explicitly to the deployment's connection budget, e.g. `?sslmode=…&pool_max_conns=4&pool_min_conns=1`. |
 | `EIDAS_AUDIT_STREAM` | `AUDIT` | JetStream stream name (ensured at startup) |
 | `EIDAS_AUDIT_STREAM_SUBJECTS` | `audit.>` | Subjects the stream captures |

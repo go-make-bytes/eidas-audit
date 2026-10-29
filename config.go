@@ -4,6 +4,7 @@ import (
 	"time"
 
 	azugocfg "azugo.io/azugo/config"
+	corecfg "azugo.io/core/config"
 	"azugo.io/core/validation"
 	"github.com/spf13/viper"
 
@@ -75,6 +76,12 @@ func (c *Configuration) Bind(_ string, v *viper.Viper) {
 	v.SetDefault("eidas_audit_duplicate_window", 2*time.Minute)
 	v.SetDefault("eidas_audit_stream_max_bytes", int64(134217728)) // 128 MiB
 
+	// The connection string carries the role's password, so it may come from the
+	// secret store (EIDAS_AUDIT_STORE_DSN_FILE) as well; an explicit environment value wins.
+	if dsn, err := corecfg.LoadRemoteSecret("EIDAS_AUDIT_STORE_DSN"); err == nil && dsn != "" {
+		v.SetDefault("eidas_audit_store_dsn", dsn)
+	}
+
 	_ = v.BindEnv("eidas_audit_store_dsn", "EIDAS_AUDIT_STORE_DSN")
 	_ = v.BindEnv("eidas_audit_stream", "EIDAS_AUDIT_STREAM")
 	_ = v.BindEnv("eidas_audit_stream_subjects", "EIDAS_AUDIT_STREAM_SUBJECTS")
@@ -86,6 +93,9 @@ func (c *Configuration) Bind(_ string, v *viper.Viper) {
 
 // Validate validates the configuration.
 func (c *Configuration) Validate(valid *validation.Validate) error {
+	if err := refuseEmptyFileSecret("EIDAS_AUDIT_STORE_DSN", c.StoreDSN); err != nil {
+		return err
+	}
 	if err := c.BaseConfiguration.Validate(valid); err != nil {
 		return err
 	}
