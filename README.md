@@ -123,10 +123,10 @@ sequenceDiagram
 
     JS->>C: deliver audit.signing (broker.Envelope)
     C->>S: Append(envelope, sourceService)
-    S->>P: BEGIN; lock_chain → chain append lock (held to commit)
+    S->>P: BEGIN <br/> lock_chain → chain append lock (held to commit)
     S->>P: chain_head → current head hash
     S->>S: hash = SHA-256(canonical(envelope) || prev_hash)
-    S->>P: append_event(envelope, prev_hash, hash); COMMIT
+    S->>P: append_event(envelope, prev_hash, hash) <br/> COMMIT
     alt event_id already stored (redelivery)
         P-->>S: duplicate = true (no new row)
         S-->>C: AppendResult{Duplicate:true}
