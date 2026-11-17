@@ -14,9 +14,12 @@ runs the service or integrates against it.
 
 ### Changed
 
-- **Libraries updated, and the service now builds with Go 1.27.3:** azugo v0.40.2, go-platform-kit v1.11.5 and
-  go-sec-events v1.2.3, with the other dependencies at their current releases. Nothing about the API, the
-  configuration or the database changes.
+- **Libraries updated, and the service now builds with Go 1.27.4:** azugo v0.50.2, go-platform-kit v1.13.0 and
+  go-sec-events v1.3.0, with the other dependencies at their current releases. Nothing about the configuration or
+  the database changes.
+- **Request bodies are held to the framework's limit.** Anything the service reads over HTTP answers 413 above
+  4 MiB (the default; `SERVER_MAX_REQUEST_BODY_SIZE` raises or lowers it). The service takes no request bodies
+  of its own today, so nothing changes for callers.
 
 ## v0.1.2
 
