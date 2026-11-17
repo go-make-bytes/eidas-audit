@@ -3,6 +3,24 @@
 Notable changes to this service, newest first, per release. This file is written for whoever
 runs the service or integrates against it.
 
+## v0.2.0
+
+### Added
+
+- **`EIDAS_AUDIT_STORE_DSN_FILE`.** The database connection string carries the role's password, so it can now be
+  read from a file (for example one a secrets agent writes). `EIDAS_AUDIT_STORE_DSN`, when set, still wins, so an
+  existing deployment changes nothing. If the file is named but missing or empty, the service refuses to start
+  instead of falling back to the non-durable in-memory store.
+
+### Changed
+
+- **Libraries updated, and the service now builds with Go 1.27.4:** azugo v0.50.2, go-platform-kit v1.13.0 and
+  go-sec-events v1.3.0, with the other dependencies at their current releases. Nothing about the configuration or
+  the database changes.
+- **Request bodies are held to the framework's limit.** Anything the service reads over HTTP answers 413 above
+  4 MiB (the default; `SERVER_MAX_REQUEST_BODY_SIZE` raises or lowers it). The service takes no request bodies
+  of its own today, so nothing changes for callers.
+
 ## v0.1.2
 
 A security release. **The service now builds with Go 1.27.2**, and its libraries move to their Go
